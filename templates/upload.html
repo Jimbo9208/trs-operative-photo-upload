@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Photo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        label, select, input, button {
+            display: block;
+            width: 100%;
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+        button {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Welcome, {{ name }}</h2>
+    <h3>Upload Site Photo</h3>
+
+    <form method="POST" enctype="multipart/form-data">
+        <label for="site">Site:</label>
+        <select id="site" name="site" required>
+            {% for site in sites %}
+                <option value="{{ site }}">{{ site }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="plot">Plot:</label>
+        <select id="plot" name="plot" required></select>
+
+        <input type="file" name="photo" accept="image/*" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <p>{{ messages[0] }}</p>
+        {% endif %}
+    {% endwith %}
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        const sitePlotData = {{ plots | tojson }};
+        const $site = $('#site');
+        const $plot = $('#plot');
+
+        function populatePlots(site) {
+            $plot.empty();
+            if (sitePlotData[site]) {
+                sitePlotData[site].forEach(function(plot) {
+                    $plot.append(new Option(plot, plot));
+                });
+            }
+            $plot.trigger('change');
+        }
+
+        $site.on('change', function () {
+            populatePlots(this.value);
+        });
+
+        $(document).ready(function () {
+            $site.select2({ placeholder: "Select a Site" });
+            $plot.select2({ placeholder: "Select a Plot" });
+            populatePlots($site.val());
+        });
+    </script>
+</body>
+</html>
+
+

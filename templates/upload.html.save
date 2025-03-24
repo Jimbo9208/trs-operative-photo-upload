@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Photo</title>
+</head>
+<body>
+    <h2>Welcome, {{ name }}</h2>
+    <h3>Select Job and Upload Photo</h3>
+<button onclick="window.location.reload();">Refresh Job List</button>
+
+    <form method="POST" enctype="multipart/form-data">
+        <label>Job:</label>
+        <select name="job">
+            {% for job in jobs %}
+                <option value="{{ job }}">{{ job }}</option>
+            {% endfor %}
+        </select>
+        <input type="file" name="photo" required>
+        <button type="submit">Upload</button>
+    </form>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <p>{{ messages[0] }}</p>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>
+
+
